@@ -607,26 +607,17 @@ SetConsoleCursorPosition( GetStdHandle( STD_OUTPUT_HANDLE ), mycoord );
 }
 
 
-void deplacement_pion(int numero_joueur,t_propriete tab_p[32],joueur tab_j[4]){
+void deplacement_pion(int nombre_joueur,t_propriete tab_p[32],joueur tab_j[4]){
 
     InitilisationPlateau(tab_p);
-    switch (numero_joueur){
-    case 0:
-        gotoligcol((tab_p[tab_j[numero_joueur].position].x-2),(tab_p[tab_j[numero_joueur].position].y));
-        break;
-    case 1:
-        gotoligcol((tab_p[tab_j[numero_joueur].position].x+2),(tab_p[tab_j[numero_joueur].position].y));
-        printf("%s",tab_j[numero_joueur].nom);
-        break;
-    case 2:
-        gotoligcol((tab_p[tab_j[numero_joueur].position].x),(tab_p[tab_j[numero_joueur].position].y+2));
-        break;
-    case 3:
-        gotoligcol((tab_p[tab_j[numero_joueur].position].x),(tab_p[tab_j[numero_joueur].position].y-2));
+        for (int i=0;i<nombre_joueur;i++){
+            gotoligcol((tab_p[tab_j[i].position].y),(tab_p[tab_j[i].position].x-i));
+            printf("%c",tab_j[i].signe);
 
-        break;
     }
+
     }
+
 
 
 
