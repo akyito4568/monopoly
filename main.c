@@ -1,19 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "header.h"
+#include <windows.h>
+
 
 
 int main()
 {
 
-    int nbJoueurs,joueurs[nbJoueurs];
-    printf("Combien de joueurs etes vous ? :");
-    do{
-        scanf("%i",&nbJoueurs);
-        if ((nbJoueurs>=1) && (nbJoueurs<=4))
-            break;
-        printf("Entrez un nombre entre 1 et 4 :");
-        }
-    while ((nbJoueurs<1) || (nbJoueurs>4));
+    int nbJoueurs=2;
+    joueur tab[4];
+    t_propriete tab2[32];
+    config_joueur(tab,nbJoueurs);
+    system("cls");
+    remplissagetableau(tab2);
+    InitilisationPlateau(tab2);
+    deplacement_pion(1,tab2,tab);
+
+
 
 
 
