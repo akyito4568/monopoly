@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main()
+{
+    int de1, de2, sommede;
+    sommede = LanceDe(de1, de2);
+    printf("Vous avancez de %d cases", sommede);
+}
+
+int LanceDe (int de1, int de2){
+        int BorneInf = 1;
+        int BorneSup = 6;
+        int i = 0;
+        int compteur = 1;
+        int somme = 0;
+        srand(time(NULL));
+
+        // lancement des dés
+        de1 = rand()%(BorneSup - BorneInf + 1) + BorneInf;
+        de2 = rand()%(BorneSup - BorneInf + 1) + BorneInf;
+        printf("Vous avez obtenu les nombres % d %d, en lancant les des\n", de1, de2);
+
+        if (compteur<3){
+            while (de1 == de2){
+                printf("Vous avez fait un double, veuillez relancer vos des\n");
+                de1 = rand()%(BorneSup - BorneInf + 1) + BorneInf;
+                de2 = rand()%(BorneSup - BorneInf + 1) + BorneInf;
+                printf("Vous avez obtenu les nombres % d %d, en lancant les des\n", de1, de2);
+                compteur ++;
+            }
+        }
+        if (compteur < 3){
+            somme = de1 + de2;
+        }
+        return somme;
+}
