@@ -61,5 +61,4 @@ void debutejoueur(int*j1, int*j2,int*j3, int*j4,int nbJoueurs);
 void ordrejoueurs(int nbJoeurs);
 
 
-
 #endif // HEADER_H_INCLUDED
