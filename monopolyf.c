@@ -456,15 +456,15 @@ void remplissagetableau(t_propriete Plateau[32])
 
     t_propriete Impot1={4,0,"Evenement","Impot 1",0,'0',0,0,0,0,32,5};
 
-    t_propriete Chance1 ={5,0,"Evenement","Chance 1",0,'0',0,0,0,0,0,5};
+    t_propriete Chance1 ={5,0,"Evenement","Chance 1",0,'0',0,0,0,0,40,5};
 
-    t_propriete OperaSydney ={6,2,"Australie","Opera Sydney",60,'0',0,0,0,30,40,5};
+    t_propriete OperaSydney ={6,2,"Australie","Opera Sydney",60,'0',0,0,0,30,48,5};
 
-    t_propriete BarrieredeCorail ={7,2,"Australie","Barriere de Corail",60,'0',0,0,0,30,48,5};
+    t_propriete BarrieredeCorail ={7,2,"Australie","Barriere de Corail",60,'0',0,0,0,30,56,5};
 
-    t_propriete PalaisRoyaldesExpositions ={8,2,"Australie","Palais Royal des Expositions",60,'0',0,0,0,30,56,5};
+    t_propriete PalaisRoyaldesExpositions ={8,2,"Australie","Palais Royal des Expositions",60,'0',0,0,0,30,64,5};
 
-    t_propriete Prison={9,0,"Evenement","Prison",0,'0',0,0,0,0,64,5};
+    t_propriete Prison={9,0,"Evenement","Prison",0,'0',0,0,0,0,72,5};
 
     t_propriete ChristRedempteur ={10,3,"Bresil","Christ Redempteur",60,'0',0,0,0,30,72,10};
 
@@ -618,10 +618,60 @@ void deplacement_pion(int nombre_joueur,t_propriete tab_p[32],joueur tab_j[4]){
 
     }
 
+void clearScreen(){
+    system("cls");
+    }
+
+
+void LanceDe(int * de1,int * de2){
+        int BorneInf = 1;
+        int BorneSup = 6;
+        srand(time(NULL));
+
+
+        *de1 = rand()%(BorneSup - BorneInf + 1) + BorneInf;
+        *de2 = rand()%(BorneSup - BorneInf + 1) + BorneInf;
+
+
+}
+
+int doubles(int * a){
 
 
 
+    int de1,de2;
+    LanceDe(&de1,&de2);
+    if (de1==de2){
+        *a=*a+de1+de2;
+        return 1;}
 
+    else{
+        *a=*a+de1+de2;
+        return 0;}
+    }
+
+void lance_de_final(joueur * a, t_propriete tab[32]){
+    int somme=0;
+    int compteur=0;
+    int test;
+    do{
+        test=doubles(&somme);
+        printf("\ntest :%i",test);
+        printf("\nsomme:%i",somme);
+        compteur++;
+        if (compteur==3){
+            a->position=8;
+            break;}
+        a->position= (a->position+somme)%32;
+        somme=0;
+            }
+
+
+
+    while(test);
+
+    printf("\n nouvelle pos :%i",a->position);
+    }
 
 
 
