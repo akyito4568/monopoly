@@ -661,7 +661,7 @@ void lance_de_final(joueur * a, t_propriete tab[32]){
         printf("\ntest :%i",test);
         printf("\nsomme:%i",somme);
         compteur++;
-        if (compteur==3){
+        if (compteur==3 && test==1){
             a->position=8;
             break;}
         a->position= (a->position+somme)%32;
