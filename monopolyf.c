@@ -623,10 +623,11 @@ void clearScreen(){
     }
 
 
+
 void LanceDe(int * de1,int * de2){
         int BorneInf = 1;
         int BorneSup = 6;
-        srand(time(NULL));
+
 
 
         *de1 = rand()%(BorneSup - BorneInf + 1) + BorneInf;
@@ -654,6 +655,7 @@ void lance_de_final(joueur * a, t_propriete tab[32]){
     int somme=0;
     int compteur=0;
     int test;
+    srand(time(NULL));
     do{
         test=doubles(&somme);
         printf("\ntest :%i",test);
@@ -672,7 +674,6 @@ void lance_de_final(joueur * a, t_propriete tab[32]){
 
     printf("\n nouvelle pos :%i",a->position);
     }
-
 
 
 
