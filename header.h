@@ -57,6 +57,9 @@ void remplissagetableau(t_propriete Plateau[32]);
 void config_joueur(joueur a[4],int nbJoueurs);
 void gotoligcol( int lig, int col );
 void deplacement_pion(int numero_joueur,t_propriete tab_p[32],joueur tab_j[4]);
+void clearScreen();
+int doubles();
+int LanceDe();
 
 
 
