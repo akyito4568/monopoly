@@ -23,8 +23,13 @@ int main()
     system("cls");
     remplissagetableau(tab2);
     InitilisationPlateau(tab2);
+    lance_de_final(&tab[0],tab2);
     deplacement_pion(nbJoueurs,tab2,tab);
     gotoligcol(100,0);
+
+
+    return 0;
+
 
 
 
