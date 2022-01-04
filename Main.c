@@ -92,4 +92,11 @@ int main()
                 break;
         }while(continuer == 1);
     }
+    
+        clearScreen();
+        menu(tableau, Plateau, &nbjoueurs, &choix, tableauordre);
+
+
+        gotoligcol(50, 0); //affichage du process return en dehors du plateau
 }
+
