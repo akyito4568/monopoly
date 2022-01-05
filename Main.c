@@ -78,7 +78,19 @@ int main()
             ///achat potentiel de propriété
             Case = tableauordre[compteur].position;
             achat_location(&Plateau[Case], &tableauordre[compteur]);
+            ///case autre que propriété
+              
+            // réaffichage des données du joueur et de la propriété pour voir les modifications si il y a eu un achat
+            afficher_donnee_joueur_encours(&tableauordre[compteur]);
+            affichagepropriete(Plateau, &tableauordre[compteur]);
+            for(i=0; i<32; i++){
+                for(j=0; j<nbjoueurs; j++){
+                    gotoligcol(0,0);
+                    affichage_bien_joueurs(&Plateau[i], &tableauordre[j]);
+                }
+            }
 
+            Color(15,0);
             gotoligcol(0,85);
             printf("Si vous avez termine votre tour selectionner 1 : ");
             gotoligcol(1, 85);
@@ -92,11 +104,10 @@ int main()
                 break;
         }while(continuer == 1);
     }
-    
+
         clearScreen();
         menu(tableau, Plateau, &nbjoueurs, &choix, tableauordre);
 
 
         gotoligcol(50, 0); //affichage du process return en dehors du plateau
 }
-
