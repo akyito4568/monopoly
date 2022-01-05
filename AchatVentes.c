@@ -8,6 +8,19 @@
 #define MAX_LIMIT 50
 
 
+void affichage_bien_joueurs(t_propriete* prop, joueur* a){
+    int test=0;
+    gotoligcol(0,0);
+    test = strcmp(prop->nomproprietaire, a->nom);
+    //si la propriété appartient au joueur
+    if(test==0){
+        gotoligcol(prop->y-1, prop->x);//place du curseur aux coordonnées de la case
+        Color(a->couleur, 0);
+        printf("%c", 0xDB);
+    }
+
+}
+
 void achat_location (t_propriete* prop, joueur* a){
     int choix=0;
     int test=0, testbis=0;
@@ -29,10 +42,10 @@ void achat_location (t_propriete* prop, joueur* a){
         else{
             do {
             gotoligcol(21,85);
-            printf("Voulez vous acheter ce monument, il coute %d ? (1. Oui 2. Non)", prop->prix);
+            printf("Voulez vous acheter ce monument, il coute %d euros? (1. Oui 2. Non)", prop->prix);
             fflush(stdin);
             scanf("%d", &choix);
-            }while((!(choix==1)) && (!(choix==0)));
+            }while((!(choix==1)) && (!(choix==2)));
             //blindage de la saisie
 
             //si le joueur valide l'achat
@@ -43,21 +56,21 @@ void achat_location (t_propriete* prop, joueur* a){
                 printf("Vous avez acheter ce monument. Felicitation !");
             }
             // si le joueur ne veut pas acheter
-            if(choix == 0){
+            if(choix == 2){
                 gotoligcol(22, 85);
                 printf("Vous avez decider de ne pas acheter ce monument.");
             }
         }
     }
     ///si la propriété est déjà a quelqu'un
-    if (test==1){
+    if(!test==0){
         //si le joueur est le propriétaire
         if(testbis==0){
             gotoligcol(22,85);
             printf("Bienvenue chez vous %s !", a->nom);
         }
         // si le joueur n'est pas propriétaire
-        if(test==0){
+        if(!testbis==0){
             gotoligcol(22, 85);
             printf("Vous voulez visiter ce monument. Vous payer votre visite guidee (%d euros)", prop->loyer);
             a->argent = (a->argent) - (prop->loyer);
