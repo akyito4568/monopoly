@@ -72,6 +72,7 @@ void lance_de_final(joueur * a, t_propriete tab[32]);
 
 //fichier AchatVente etc
 void achat_location (t_propriete* prop, joueur* a);
+void affichage_bien_joueurs(t_propriete* prop, joueur* a);
 
 
 #endif // FONCTIONS_H_INCLUDED
