@@ -33,36 +33,12 @@ int doubles(int * a){
         return 0;}
 }
 
-void lancedefinal(joueur* a, t_propriete tab[32], int* compteursortie, int* validationprison){ //lancer des dés
+void lancedefinal(joueur* a, t_propriete tab[32]){ //lancer des dés
     int somme=0, sommeaffichee=0;
     int compteur=0;
     int test;
     srand(time(NULL));
     Color(15,0);
-        if (a->position==8 && *compteursortie<3 && *validationprison==1){ //cas ou le joueur est en prison, après avoir fait trois doubles, ou envoyé par un agent
-        test=doubles(&somme); // cas ou le joueur est en prison depuis moins de trois tours
-        if(test==1){ //si double, le joueur est libéré
-            gotoligcol(10, 85);
-            printf("Vous etes libere de prison, vous avez fait un double");
-            a->position = (a->position+somme)%32;
-            *compteursortie=0;
-            *validationprison=0;
-        }
-        if (test==0 && *compteursortie<3){ //si pas de double et joueur en prison depuis moins de trois tours, reste en prison
-            gotoligcol(10, 85);
-            printf("Dommage, vous restez en prison, reessayer de sortir au prochain tour !");
-            compteursortie++;
-        }
-        if(test==0 && *compteursortie==3){ //Cas ou le joueur est en prison depuis plus de trois tours, il est libéré de prison, et paye
-            gotoligcol(10, 85);
-            printf("Vous etes en prison depuis trois tours, vous etes libere et vous payez votre caution");
-            a->argent= a->argent-50;
-            a->position = (a->position+somme)%32;
-            *compteursortie = 0;
-            *validationprison=0;
-        }
-    }
-    else{
         do{
             test=doubles(&somme);
             gotoligcol(47, 0);
@@ -74,19 +50,10 @@ void lancedefinal(joueur* a, t_propriete tab[32], int* compteursortie, int* vali
                 a->position=8;
                 gotoligcol(7, 85);
                 printf("Mince ! Vous avez fait trois doubles, vous allez en prison...");
-                *validationprison=1;
-                break;}
-
-            a->position= (a->position+somme)%32;
-
-            // si le joueur tombe sur la case allez en prison
-            if(a->position == 24){
-                gotoligcol(7, 85);
-                printf("Mince ! Vous avez ete arrete par un agent de police... Direction la prison.");
-                a->position = 8;
-                *validationprison = 1;
                 break;
             }
+
+            a->position= (a->position+somme)%32;
 
             gotoligcol(4, 85);
             printf("Vous avez lance les des %d fois.", compteur);
@@ -96,7 +63,8 @@ void lancedefinal(joueur* a, t_propriete tab[32], int* compteursortie, int* vali
             sommeaffichee = sommeaffichee + somme;
             printf("Vous avancez de %d cases.", sommeaffichee);
             somme=0;
+            compteur=0;
             }
         while(test);
-    }
 }
+
