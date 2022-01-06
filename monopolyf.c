@@ -19,6 +19,9 @@ void config_joueur(joueur a[4],int nbJoueurs)
         a[i].argent=1500;
         a[i].position=0;
         a[i].nombre_propri=0;
+        a[i].index=i;
+        a[i].tour_prison=-1;
+        a[i].carte_prison=0;
 
         printf("\nChoisir signe \n1.%c \n2.%c \n3.%c \n4.%c  ",0x03,0x04,0x05,0x06);
 
@@ -468,15 +471,15 @@ void remplissagetableau(t_propriete Plateau[32])
 
     t_propriete ChristRedempteur ={10,3,"Bresil","Christ Redempteur",60,'0',0,0,0,30,72,10};
 
-    t_propriete CathedraleMetroporitana ={11,3,"Bresil","Cathedrale Metroporitana",60,'0',0,0,0,30,72,15};
+    t_propriete CathedraleMetroporitana ={11,3,"Bresil","Cathedrale Metroporitana",60,'0',25,0,0,30,72,15};
 
-    t_propriete TheatreAmazonas ={12,3,"Bresil","Theatre Amazonas",60,'0',0,0,0,30,72,20};
+    t_propriete TheatreAmazonas ={12,3,"Bresil","Theatre Amazonas",60,'0',70,0,0,30,72,20};
 
     t_propriete Communaute1={13,0,"Evenement","Communaute 1",0,'0',0,0,0,0,72,25};
 
     t_propriete LAlhambra ={14,4,"Espagne","LAlhambra",60,'0',0,0,0,30,72,30};
 
-    t_propriete BasiliqueSagradaFamilia ={15,4,"Espagne","Basilique Sagrada Familia",60,'0',0,0,0,30,72,35};
+    t_propriete BasiliqueSagradaFamilia ={15,4,"Espagne","Basilique Sagrada Familia",60,'0',25,0,0,30,72,35};
 
     t_propriete TheatreromaindeLaMerida ={16,4,"Espagne","Theatre romain de la Merida",60,'0',0,0,0,30,72,40};
 
@@ -490,7 +493,7 @@ void remplissagetableau(t_propriete Plateau[32])
 
     t_propriete Chance2 ={21,0,"Evenement","Chance 2",0,'0',0,0,0,0,40,45};
 
-    t_propriete Colisee ={22,6,"Italie","Colisee",60,'0',0,0,0,30,32,45};
+    t_propriete Colisee ={22,6,"Italie","Colisee",60,'0',60,0,0,30,32,45};
 
     t_propriete TourdePise ={23,6,"Italie","Tour de Pise",60,'0',0,0,0,30,24,45};
 
@@ -498,7 +501,7 @@ void remplissagetableau(t_propriete Plateau[32])
 
     t_propriete Police ={25,0,"Evenement","Police",0,'0',0,0,0,0,8,45};
 
-    t_propriete Skytree ={26,7,"Japon","Skytree",60,'0',0,0,0,30,8,40};
+    t_propriete Skytree ={26,7,"Japon","Skytree",60,'0',16,0,0,30,8,40};
 
     t_propriete PalaisimperialdeKyoto ={27,7,"Japon","Palais Imperial de Kyoto",60,'0',0,0,0,30,8,35};
 
@@ -662,9 +665,10 @@ void lance_de_final(joueur * a, t_propriete tab[32]){
         printf("\nsomme:%i",somme);
         compteur++;
         if (compteur==3 && test==1){
-            a->position=8;
+            a->position=24;
             break;}
-        a->position= (a->position+somme)%32;
+        a->position=(a->position+somme)%32;
+
         somme=0;
             }
 
@@ -674,6 +678,203 @@ void lance_de_final(joueur * a, t_propriete tab[32]){
 
     printf("\n nouvelle pos :%i",a->position);
     }
+
+
+
+
+//int propri(t_propriete tab[32],joueur *a,joueur tab2[4]){
+    //if(tab[position_actuel(&a)].proprietaire<4 && tab[position_actuel(&a)].proprietaire!=a->index)
+        //loyer(tab,&a,tab2);
+
+
+    //else if (tab[position_actuel(&a)].proprietaire==a->index)
+        //achat();
+
+
+
+
+
+
+
+   // }
+
+
+void loyer(t_propriete tab[32],joueur*a,joueur tab2[4]){
+    int s,s2;
+    int compteur=0;
+    int tab_int[32];
+    int tab_int2[32];
+    if (tab[a->position].loyer<=a->argent){
+        tab2[tab[a->position].proprietaire].argent= tab2[tab[a->position].proprietaire].argent + tab[a->position].loyer;
+        a->argent = a->argent - tab[a->position].loyer;}
+
+    else if (loyer_vente(tab,*a,tab2)>=tab[a->position].loyer){
+            for(int i=0;i<32;i++){
+                if(tab[i].proprietaire==a->index){
+                    tab_int[compteur]=prix_vente(tab[i]);
+                    tab_int2[compteur]=tab[i].place-1;
+                    compteur++;
+
+                }
+            }
+        while(s<tab[a->position].loyer){
+                printf("\nVous devez vendre pour: %i$",tab[a->position].loyer-a->argent-s);
+                for(int k=0;k<=compteur;k++){
+                    if (tab_int[k]!=0)
+                        printf("\n%i.%s %i$",k,tab[tab_int2[k]].nom,tab_int[k]);
+                    }
+                scanf("%i",&s2);
+                s=s+tab_int[s2];
+                tab_int[s2]=0;
+                tab[tab_int2[s2]].proprietaire=4;
+                if (s-tab[a->position].loyer>0)
+                    a->argent=a->argent + s-tab[a->position].loyer;
+
+                }
+
+            }
+
+
+
+            }
+
+
+
+void position_actuel(joueur * a){
+    return a->position;
+    }
+
+
+
+
+void index(joueur tab[4]){
+    for(int i=0;i<4;i++){
+        tab[i].index=i;
+    }
+    }
+
+int loyer_vente(joueur a,t_propriete tab[32]){
+    int somme=0;
+    for (int i=0;i<32;i++){
+        if (tab[i].proprietaire==a.index){
+            somme= somme + prix_vente(tab[i]);
+        }
+
+    }
+     return somme;
+     }
+int prix_vente(t_propriete a){
+    int b=a.prix_actuel/2;
+    return b;
+      }
+void remplissagetableau2(t_propriete tab[32]){
+    for (int i=0;i<32;i++)
+        tab[i].prix_actuel=tab[i].prix;
+    }
+void index_l(joueur tab[4],int nbJoueurs){
+    for(int i=0;i<nbJoueurs;i++){
+        tab[i].index=i;}
+
+
+    }
+
+void index_propriete(t_propriete tab[32]){
+    for(int i=0;i<32;i++){
+        tab[i].proprietaire=4;
+        }
+    }
+
+int prison_final(t_propriete tab[32],joueur *a,joueur tab2[4]){
+    int choix;
+    printf("Vous etes en prison");
+    if (a->carte_prison==1){
+        printf("Vous avez une carte prison voulez vous l'utiliser (1=Oui 0=Non)? :");
+        scanf("%i",&choix);//a blinder
+        if (choix==1){
+            a->tour_prison=-2;
+            a->carte_prison--;
+            return 0;}
+
+
+        else{
+                prison_basic(tab,a,tab2);
+                return 0;
+                    }
+}
+
+    prison_basic(tab,a,tab2);
+
+    return 0;
+
+
+
+}
+
+
+
+int prison_basic(t_propriete tab[32],joueur *a,joueur tab2[4]){
+    int choix;
+    srand(time(NULL));
+
+
+        if (a->tour_prison!=2){
+            printf("\n1.Lancer les des \n2.Payer amende");
+            scanf("%i",&choix);}//a blinder
+
+        else
+            choix=1;
+
+        if(choix==1)
+        {
+            if(doubles_prison(a)==1)
+            {
+                printf("\nVous avez fait un double vous sortez de prison");
+                a->tour_prison=-2;
+                return 0;
+            }
+            else if (a->tour_prison==2){
+                    a->argent=a->argent-50;
+                    a->tour_prison=-2;
+                    lance_de_final(&a,tab);
+                    return 0;
+
+            }
+            else
+            {
+                printf("\nVous n'avez pas fait un double vous restez en prison");
+                a->tour_prison++;
+                 return 0;
+            }
+        }
+        if (choix==2)// blinder!!
+        {
+            a->argent=a->argent-50;
+            a->tour_prison=-2;
+            lance_de_final(a,tab);
+            return 0;
+
+
+        }
+
+    return 0;
+
+    }
+int doubles_prison(joueur * a){
+
+
+
+    int de1,de2;
+    LanceDe(&de1,&de2);
+    printf("\n%i %i",de1,de2);
+    if (de1==de2){
+        a->position=a->position + de2 + de1;
+        return 1;
+    }
+
+        return 0;
+        }
+
+
 
 
 
