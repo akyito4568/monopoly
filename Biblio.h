@@ -7,7 +7,8 @@
 
 #define MAX_LIMIT 50
 
-typedef struct Propriete{ // définition structure case
+typedef struct Propriete
+{
     int place;
     int groupe;
     char nomgroupe[MAX_LIMIT];
@@ -20,24 +21,29 @@ typedef struct Propriete{ // définition structure case
     int hypotheque;
     int x;
     int y;
-}t_propriete;
+    int proprietaire;
+    int prix_actuel;
+} t_propriete;
 
 typedef struct coord //structure pour coordonnées des joueurs
 {
     int x,y;
 } coord;
 
-typedef struct joueur //structure des joueurs
+
+typedef struct joueur
 {
     char nom[MAX_LIMIT];
     int argent;
     char signe;
-    int indice;
-    int couleur;
     int nombre_propri;
     int position;
     coord pos_cord;
-} joueur;
+    int indice;
+    int couleur;
+    int tour_prison;
+    int carte_prison;
+}joueur;
 
 //fichier Menu
 void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, joueur tabordre[4]);
@@ -59,6 +65,7 @@ void gotoligcol( int lig, int col);
 void clearScreen();
 
 //fichier Joueurs
+void config_joueur(joueur a[4],int nbJoueurs);
 void configuration_joueur(joueur* a);
 void afficher_donnee_joueur_encours(joueur* tab);
 void ordrepassagejoueurs(int nbjoueurs, joueur tab[4], joueur tabapres[4]);
@@ -67,12 +74,30 @@ void ordrepassagejoueurs(int nbjoueurs, joueur tab[4], joueur tabapres[4]);
 void deplacement_pion(t_propriete tab_p[32],joueur* tab, int i);
 void LanceDe(int * de1,int * de2);
 int doubles(int * a);
-void lancedefinal(joueur* tableau, t_propriete tab[32], int* compteursortie, int* validationprison);
+void lancedefinal(joueur* tableau, t_propriete tab[32]);
 void lance_de_final(joueur * a, t_propriete tab[32]);
 
 //fichier AchatVente etc
-void achat_location (t_propriete* prop, joueur* a);
+void achat_location (t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4]);
+void loyer(t_propriete tab[32],joueur*a,joueur tab2[4]);
+int prix_vente(t_propriete* a);
+int loyer_vente(joueur* a,t_propriete tab[32]);
+
 void affichage_bien_joueurs(t_propriete* prop, joueur* a);
+
+int prison_basic(t_propriete tab[32],joueur *a,joueur tab2[4]);
+int doubles_prison(joueur * a);
+int prison_final(t_propriete tab[32],joueur *a,joueur tab2[4]);
+
+void analyse_case_joueur(t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4]);
+
+void index_propriete(t_propriete tab[32]);
+void index_l(joueur tab[4],int nbJoueurs);
+
+void remplissagetableau2(t_propriete tab[32]);
+
+void index(joueur tab[4]);
+int position_actuel(joueur * a);
 
 
 #endif // FONCTIONS_H_INCLUDED
