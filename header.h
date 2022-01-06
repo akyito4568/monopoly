@@ -14,6 +14,11 @@ typedef struct joueur
     int nombre_propri;
     int position;
     coord pos_cord;
+    int index;
+    int tour_prison;
+    int carte_prison;
+
+
 } joueur;
 
 
@@ -44,6 +49,10 @@ typedef struct Propriete
 
     int y;
 
+    int proprietaire;
+
+    int prix_actuel;
+
 
 
 
@@ -57,9 +66,10 @@ void remplissagetableau(t_propriete Plateau[32]);
 void config_joueur(joueur a[4],int nbJoueurs);
 void gotoligcol( int lig, int col );
 void deplacement_pion(int numero_joueur,t_propriete tab_p[32],joueur tab_j[4]);
-void clearScreen();
-int doubles();
-int LanceDe();
+int prison_final(t_propriete tab[32],joueur *a,joueur tab2[4]);
+
+int prison_basic(t_propriete tab[32],joueur * a,joueur tab2[4]);
+void lance_de_final(joueur * a, t_propriete tab[32]);
 
 
 
