@@ -7,6 +7,58 @@
 
 #define MAX_LIMIT 50
 
+void config_joueur(joueur a[4],int nbJoueurs)
+{
+    int i=0,choix=0, choix2=0;
+    char tab[]= {0x03,0x04,0x05,0x06};
+    int couleurjoueur[4]={1,2,3,4};
+    for(i=0; i<nbJoueurs; i++)
+    {
+        a[i].argent=1500;
+        a[i].position=0;
+        a[i].nombre_propri=0;
+        a[i].indice=i;
+        a[i].tour_prison=-1;
+        a[i].carte_prison=0;
+
+        printf("\nChoisir signe \n1.%c \n2.%c \n3.%c \n4.%c  \n",0x03,0x04,0x05,0x06);
+
+        do
+        {
+            scanf("%i",&choix);
+            a[i].signe=tab[choix-1];
+            if (tab[choix-1]!='b' && (choix>0) &&(choix<5) )
+            {
+                tab[choix-1]='b';
+                break;
+            }
+            printf("Veuillez saisir un signe valable ou un chiffre entre 1 et 4 : ");
+
+        }while ((tab[choix-1]=='b')||(choix<1)||(choix>4));
+        printf("\nVotre signe est le : %c",a[i].signe);
+        fflush(stdin);
+
+        printf("\nChoisissez votre couleur \n1.Bleu \n2.Vert \n3.Turquoise \n4.Rouge  \n");
+        do
+        {
+            scanf("%d",&choix2);
+            (a[i].couleur)=couleurjoueur[choix2-1];
+
+            if (couleurjoueur[choix2-1]!='b' && (choix2>0) &&(choix2<5) )
+            {
+                couleurjoueur[choix2-1]='b';
+                break;
+            }
+            printf("Veuillez saisir une couleur valable, soit un chiffre entre 1 et 4 : ");
+        }while ((couleurjoueur[choix2-1]=='b')||(choix2<1)||(choix2>4));
+        printf("\nVotre couleur est la numero %d", a[i].couleur);
+
+        printf("\nChoisir un nom :");
+        fflush(stdin);
+        gets((a[i].nom));
+    }
+}
+
 //remplissage de la structure pour un joueur avec passage par adresse
 void configuration_joueur(joueur* a){
     int choix=0, choix2=0;
@@ -51,6 +103,7 @@ void configuration_joueur(joueur* a){
         printf("\nChoisir un nom :");
         fflush(stdin);
         gets((a->nom));
+
 }
 
 
@@ -143,4 +196,7 @@ void ordrepassagejoueurs(int nbjoueurs, joueur tab[4], joueur tabapres[4]){
     scanf("%c", &action);
     consoleencouleur(15,0);
 }
+
+
+
 
