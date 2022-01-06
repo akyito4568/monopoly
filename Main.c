@@ -11,7 +11,7 @@
 
 int main()
 {
-    int i=0;
+    int i=0, j=0;
     int nbjoueurs=0, choix=0, continuer=0, compteur=0, compteursortie=0, validationprison=0;
     int Case=0;
     char continuer2 =0;
@@ -31,10 +31,8 @@ int main()
     if (choix==1){
 
         // remplissage d'un tableau de structure joueur
-        for (i=0; i<nbjoueurs; i++){
-            configuration_joueur(&tableau[i]);
-            tableau[i].indice=i;
-        }
+        config_joueur(tableau, nbjoueurs);
+
         //mise en ordre du tableau de structure joueur
         ordrepassagejoueurs(nbjoueurs, tableau, tableauordre);
         clearScreen();
@@ -67,7 +65,7 @@ int main()
             affichageplateau(Plateau);
 
             ///lancé des dés, affichage des données du joueur et de la propriété sur laquelle il tombe
-            lancedefinal(&tableauordre[compteur], Plateau, &compteursortie, &validationprison);
+            lancedefinal(&tableauordre[compteur], Plateau);
             afficher_donnee_joueur_encours(&tableauordre[compteur]);
             affichagepropriete(Plateau, &tableauordre[compteur]);
             //affichage des pions sur le plateau
@@ -75,12 +73,12 @@ int main()
                 deplacement_pion(Plateau, &tableauordre[i], i);
             }
 
-            ///achat potentiel de propriété
+            ///traitement de la case en cours
             Case = tableauordre[compteur].position;
-            achat_location(&Plateau[Case], &tableauordre[compteur]);
-            ///case autre que propriété
-              
-            // réaffichage des données du joueur et de la propriété pour voir les modifications si il y a eu un achat
+            analyse_case_joueur(&Plateau[Case], &tableauordre[compteur], Plateau, tableauordre);
+
+
+            /// réaffichage des données du joueur et de la propriété pour voir les modifications si il y a eu un achat
             afficher_donnee_joueur_encours(&tableauordre[compteur]);
             affichagepropriete(Plateau, &tableauordre[compteur]);
             for(i=0; i<32; i++){
