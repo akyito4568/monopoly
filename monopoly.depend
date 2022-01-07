@@ -1,0 +1,57 @@
+# depslib dependency file v1.0
+1641546797 source:c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+	<string.h>
+	"Biblio.h"
+
+1641544903 c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\biblio.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+
+1641546600 source:c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\achatventes.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+	<string.h>
+	"Biblio.h"
+
+1641503283 source:c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\des.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+	<string.h>
+	"Biblio.h"
+
+1641542921 source:c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\joueurs.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+	<string.h>
+	"Biblio.h"
+
+1641503283 source:c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\monopolyf.c
+
+1641503283 source:c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\plateau.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+	<string.h>
+	"Biblio.h"
+
+1641541740 source:c:\users\balos\downloads\monopoly-jeu-julie\monopoly-jeu-julie\menu.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<time.h>
+	<string.h>
+	"Biblio.h"
+
