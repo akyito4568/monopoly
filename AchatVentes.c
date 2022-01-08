@@ -7,13 +7,11 @@
 
 #define MAX_LIMIT 50
 
-
 void affichage_bien_joueurs(t_propriete* prop, joueur* a){
-    int test=0;
     gotoligcol(0,0);
-    test = strcmp(prop->nomproprietaire, a->nom);
+
     //si la propriété appartient au joueur
-    if(test==0){
+    if((prop->proprietaire) == (a->indice)){
         gotoligcol(prop->y-1, prop->x);//place du curseur aux coordonnées de la case
         Color(a->couleur, 0);
         printf("%c", 0xDB);
@@ -22,10 +20,10 @@ void affichage_bien_joueurs(t_propriete* prop, joueur* a){
 }
 
 
-void analyse_case_joueur(t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4]){
+void analyse_case_joueur(t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4], int nbjoueurs){
 
     ///le joueur tombe sur une case particulière
-    if((a->position==0) || (a->position==3) || (a->position==8) || (a->position==11) || (a->position==16) || (a->position==18) || (a->position==24) || (a->position==25) || (a->position==29)){
+    if (a->position==0 || a->position==3 || a->position==8 || a->position==11 || a->position==16 || a->position==18 || a->position==24 || a->position==25 || a->position==29){
         //case impot
         if(a->position==29){
             gotoligcol(21,85);
@@ -34,33 +32,38 @@ void analyse_case_joueur(t_propriete* prop, joueur* a, t_propriete plateau[32], 
         }
         //case chance
         if((a->position==3) || (a->position==18)){
-            ///appel sous-programme chance sixtine
+            carteChance(prop, a, plateau, tab);
+            printf(" ");
         }
         //case communauté
         if((a->position==11) || (a->position==25)){
-            ///appel sous-programme communauté sixtine
+            carteCommunaute(prop, a, plateau, tab, nbjoueurs);
+            printf(" ");
         }
         //case police
         if((a->position==24)){
             a->position = 8; //joueur déplacé à la case prison
             prison_final(plateau, a, tab);
         }
-        if((a->position==8)){
-            prison_final(plateau, a, tab);
+        if (a->position==8){
+            gotoligcol(23,85);
+            printf(" ");
         }
-
     }
+
 
     ///le joueur tombe sur une case achetable (cas location aussi)
     else{
         achat_location(prop, a, plateau, tab);
     }
 
+
 }
 
 int prison_final(t_propriete tab[32],joueur *a,joueur tab2[4]){
     int choix;
     gotoligcol(21, 85);
+    Color(15, 0);
     printf("Vous etes en prison");
     if (a->carte_prison==1){
         gotoligcol(22,85);
@@ -69,6 +72,7 @@ int prison_final(t_propriete tab[32],joueur *a,joueur tab2[4]){
         if (choix==1){
             a->tour_prison=-2;
             a->carte_prison--;
+            lancedefinal(a, tab);
             return 0;}
 
 
@@ -83,25 +87,26 @@ int prison_final(t_propriete tab[32],joueur *a,joueur tab2[4]){
     return 0;
 }
 
-void loyer(t_propriete tab[32],joueur*a, joueur tab2[4]){
+void loyer(t_propriete tab[32], joueur*a, joueur tab2[4], t_propriete* prop){
     int s,s2;
     int compteur=0;
     int tab_int[32];
     int tab_int2[32];
-    if (tab[a->position].loyer <= (a->argent)){
-        tab2[tab[a->position].proprietaire].argent= (tab2[tab[a->position].proprietaire].argent) + (tab[a->position].loyer);
-        a->argent = a->argent - tab[a->position].loyer;}
 
-    else if (loyer_vente(a,tab)>=tab[a->position].loyer){
+    if ((prop->loyer) <= (a->argent)){
+        tab2[prop->proprietaire].argent= (tab2[prop->proprietaire].argent) + (prop->loyer);
+        a->argent = (a->argent) - (prop->loyer);
+    }
+
+    else if (loyer_vente(a,tab)>= (prop->loyer)){
             for(int i=0;i<32;i++){
                 if(tab[i].proprietaire==a->indice){
                     tab_int[compteur]=prix_vente(&tab[i]);
                     tab_int2[compteur]=tab[i].place-1;
                     compteur++;
-
                 }
             }
-        while(s<tab[a->position].loyer){
+        while(s<prop->loyer){
                 printf("\nVous devez vendre pour: %i$",tab[a->position].loyer-a->argent-s);
                 for(int k=0;k<=compteur;k++){
                     if (tab_int[k]!=0)
@@ -111,10 +116,32 @@ void loyer(t_propriete tab[32],joueur*a, joueur tab2[4]){
                 s=s+tab_int[s2];
                 tab_int[s2]=0;
                 tab[tab_int2[s2]].proprietaire=4;
-                if (s-tab[a->position].loyer>0)
-                    a->argent=a->argent + s-tab[a->position].loyer;
+                if (s-tab[a->position].loyer>0){
+                    a->argent=a->argent + s-tab[a->position].loyer;}
 
         }
+        tab2[tab[a->position].proprietaire].argent= (tab2[tab[a->position].proprietaire].argent) + (tab[a->position].loyer);
+
+    }
+    else {
+            for(int i=0;i<32;i++){
+                if(tab[i].proprietaire==a->indice){
+                    tab_int[compteur]=prix_vente(&tab[i]);
+                    tab_int2[compteur]=tab[i].place-1;
+                    compteur++;
+
+                }
+            }
+                for (int i=0;i<compteur;i++){
+                s=s+tab_int[i];
+                //tab_int[i]=0;
+                tab[tab_int2[i]].proprietaire=4;
+
+                    }
+
+                    a->argent=0;
+                    a->mort=1;
+                    tab2[tab[a->position].proprietaire].argent= (tab2[tab[a->position].proprietaire].argent) + s;
     }
 }
 
@@ -122,12 +149,6 @@ int position_actuel(joueur * a){
     return (a->position);
 }
 
-
-void index(joueur tab[4]){
-    for(int i=0;i<4;i++){
-        tab[i].indice=i;
-    }
-}
 
 int loyer_vente(joueur* a,t_propriete tab[32]){
     int somme=0;
@@ -164,19 +185,62 @@ void index_propriete(t_propriete tab[32]){
 int prison_basic(t_propriete tab[32],joueur *a,joueur tab2[4]){
     int choix;
     srand(time(NULL));
-    gotoligcol(22,85);
         if (a->tour_prison!=2){
-            printf("\n1.Lancer les des \n2.Payer amende");
-            scanf("%i",&choix);}//a blinder
+           do{
+            gotoligcol(22,85);
+            printf("1.Lancer les des 2.Payer amende  ");
+            fflush(stdin);
+            scanf("%i",&choix);
+           }while(!(choix==1) && !(choix==2));
+        }//blindage
 
-        else
-            choix=1;
-
+        ///le joueur choisi de lancer les des
         if(choix==1)
-        {
+        {   //il fait un double
             if(doubles_prison(a)==1)
             {
-                printf("\nVous avez fait un double vous sortez de prison");
+                gotoligcol(23,85);
+                printf("Vous avez fait un double vous sortez de prison");
+                a->tour_prison=-2;
+                return 0;
+            }
+            // il est en prison depuis 3 tours
+            else if (a->tour_prison==2){
+                    a->argent=a->argent-50;
+                    a->tour_prison=-2;
+                    gotoligcol(23,85);
+                    printf("Vous etes en prison depuis 3 tours, vous payez votre caution et lancez les des.");
+                    lancedefinal(a,tab);
+                    return 0;
+
+            }
+            else // pas de double et en prison depuis moins de trois tours
+            {
+                gotoligcol(23,85);
+                printf("Vous n'avez pas fait un double vous restez en prison");
+                a->tour_prison++;
+                return 0;
+            }
+        }
+        ///le joueur choisi de payer sa caution
+        //il a assez d'argent
+        if ((choix==2) && (a->argent >= 50))
+        {
+            a->argent=a->argent-50;
+            a->tour_prison=-2;
+            gotoligcol(23, 85);
+            printf("Vous avez paye votre caution, vous lancez les des et sortez de prison");
+            lancedefinal(a,tab);
+            return 0;
+        }
+        // pas assez d'argent, lance les des par défaut
+        if((choix==2) && (a->argent <50)){
+            gotoligcol(23,85);
+            printf("Vous n avez pas assez d argent pour payer votre caution, vous lancez les dés par défaut.");
+            if(doubles_prison(a)==1)
+            {
+                gotoligcol(23,85);
+                printf("\nVous avez fait un double vous sortez de prison"); // si double sort de prison
                 a->tour_prison=-2;
                 return 0;
             }
@@ -185,24 +249,10 @@ int prison_basic(t_propriete tab[32],joueur *a,joueur tab2[4]){
                     a->tour_prison=-2;
                     lancedefinal(a,tab);
                     return 0;
-
-            }
-            else
-            {
-                printf("\nVous n'avez pas fait un double vous restez en prison");
-                a->tour_prison++;
-                 return 0;
-            }
         }
-        if (choix==2)// blinder!!
-        {
-            a->argent=a->argent-50;
-            a->tour_prison=-2;
-            lancedefinal(a,tab);
-            return 0;
-        }
-    return 0;
+    }
 }
+
 
 int doubles_prison(joueur * a){
     int de1,de2;
@@ -213,7 +263,7 @@ int doubles_prison(joueur * a){
         return 1;
     }
 
-        return 0;
+    return 0;
 }
 
 
@@ -231,11 +281,6 @@ void achat_location (t_propriete* prop, joueur* a, t_propriete plateau[32], joue
     /// si la propriété n'a pas encore été acheté
     if (test==0){
         //si pas monument
-        if (a->position==0 || a->position==3 || a->position==8 || a->position==11 || a->position==16 || a->position==18 || a->position==24 || a->position==25 || a->position==29){
-            printf(" ");
-        }
-        //si propriété
-        else{
             do {
             gotoligcol(21,85);
             printf("Voulez vous acheter ce monument, il coute %d euros? (1. Oui 2. Non)", prop->prix);
@@ -244,8 +289,8 @@ void achat_location (t_propriete* prop, joueur* a, t_propriete plateau[32], joue
             }while((!(choix==1)) && (!(choix==2)));
             //blindage de la saisie
 
-            //si le joueur valide l'achat
-            if(choix == 1){
+            //si le joueur valide l'achat et qu'il a assez d'argent
+            if((choix == 1) && (a->argent >= prop->prix)){
                 gotoligcol(22, 85);
                 a->argent = (a->argent) - (prop->prix); //débit de l'argent par la banque
                 strcpy(prop->nomproprietaire, a->nom); // le nom du joueur est entré dans les données de la case propriété
@@ -253,25 +298,28 @@ void achat_location (t_propriete* prop, joueur* a, t_propriete plateau[32], joue
                 prop->proprietaire = a->indice;
                 printf("Vous avez achete ce monument. Felicitation !");
             }
+            if((choix==1) && (a->argent < prop->prix)){
+                gotoligcol(22,85);
+                printf("Vous n avez pas assez d argent, vous ne pouvez pas acheter cette propriete.");
+            }
             // si le joueur ne veut pas acheter
             if(choix == 2){
                 gotoligcol(22, 85);
                 printf("Vous avez decide de ne pas acheter ce monument.");
             }
-        }
     }
     ///si la propriété est déjà a quelqu'un
-    if(!test==0){
+    if(!(test==0)){
         //si le joueur est le propriétaire
         if(testbis==0){
             gotoligcol(22,85);
             printf("Bienvenue chez vous %s !", a->nom);
         }
         // si le joueur n'est pas propriétaire
-        if(!testbis==0){
+        if(!(testbis==0)){
             gotoligcol(22, 85);
             printf("Vous voulez visiter ce monument. Vous payez votre visite guidee (%d euros)", prop->loyer);
-            loyer(plateau, a, tab);
+            loyer(plateau, a, tab, prop);
         }
     }
 }
