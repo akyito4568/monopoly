@@ -43,20 +43,27 @@ typedef struct joueur
     int couleur;
     int tour_prison;
     int carte_prison;
+    int mort;
 }joueur;
 
 //fichier Menu
-void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, joueur tabordre[4]);
-void optionsauvegarde(joueur tab[4], t_propriete Plateau[32], int nbjoueurs, char nomsauvegarde[10]);
+void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, joueur tabordre[4], int* numsauv, joueur tabcharg[4], t_propriete plateaucharg[32]);
+void optionsauvegarde(joueur tab[4], t_propriete Plateau[32], int* nbjoueurs, int* numsauv);
 void affichage_regles_jeu();
+void afficher_createurs();
+void chargement_partie(joueur tab[4], t_propriete Plateau[32], int* numsauv, int* nbjoueurs);
 
 //fichier Plateau
-t_propriete remplissagetableau();
+void remplir_prop(t_propriete* pro, int i);
 void couleurPlateau();
 void colonnecouleur(int couleurtexte, int couleurfond,int positionX,int positionY);
 void bandecouleur(int couleurtexte, int couleurfond,int positionX,int positionY );
 void affichageplateau(t_propriete Plateau[32]);
 void affichagepropriete(t_propriete Plateau[32], joueur* tab);
+void rectangleCouleur(int couleurtexte, int couleurfond,int positionX,int positionY);
+void colonneCarteProp(int positionX,int positionY);
+void colonneCarte(int positionX,int positionY);
+
 
 //fichier Fonctions
 void consoleencouleur(int couleurtexte, int couleurfond);
@@ -79,7 +86,7 @@ void lance_de_final(joueur * a, t_propriete tab[32]);
 
 //fichier AchatVente etc
 void achat_location (t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4]);
-void loyer(t_propriete tab[32],joueur*a,joueur tab2[4]);
+void loyer(t_propriete tab[32],joueur*a,joueur tab2[4], t_propriete* prop);
 int prix_vente(t_propriete* a);
 int loyer_vente(joueur* a,t_propriete tab[32]);
 
@@ -89,15 +96,20 @@ int prison_basic(t_propriete tab[32],joueur *a,joueur tab2[4]);
 int doubles_prison(joueur * a);
 int prison_final(t_propriete tab[32],joueur *a,joueur tab2[4]);
 
-void analyse_case_joueur(t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4]);
+void analyse_case_joueur(t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4], int nbjoueurs);
 
 void index_propriete(t_propriete tab[32]);
 void index_l(joueur tab[4],int nbJoueurs);
 
 void remplissagetableau2(t_propriete tab[32]);
 
-void index(joueur tab[4]);
 int position_actuel(joueur * a);
 
 
-#endif // FONCTIONS_H_INCLUDED
+///Cartes
+void carteChance(t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4]);
+void colonneCarteC(int positionX,int positionY);
+void HautCarteC();
+void BasCarteC();
+void ligne();
+void carteCommunaute(t_propriete* prop, joueur* a, t_propriete plateau[32], joueur tab[4],int nbjoueurs);
