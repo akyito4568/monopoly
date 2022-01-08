@@ -34,8 +34,8 @@ int doubles(int * a){
 }
 
 void lancedefinal(joueur* a, t_propriete tab[32]){ //lancer des dés
-    int somme=0, sommeaffichee=0;
-    int compteur=0;
+    int somme=0, sommeaffichee=0, i=0;
+    int compteur=0, comptedouble=0;
     int test;
     srand(time(NULL));
     Color(15,0);
@@ -45,26 +45,34 @@ void lancedefinal(joueur* a, t_propriete tab[32]){ //lancer des dés
             printf("test :%i",test);
             printf("\nsomme:%i",somme);
             compteur++;
+            comptedouble = comptedouble+test;
             // si le joueur fait trois doubles
-            if (compteur==3){
+            if (comptedouble==3){
                 a->position=8;
+                a->tour_prison = 0;
                 gotoligcol(7, 85);
                 printf("Mince ! Vous avez fait trois doubles, vous allez en prison...");
                 break;
             }
-
-            a->position= (a->position+somme)%32;
+            for(i=0; i<somme; i++){
+                a->position= (a->position+1)%32;
+                if(a->position==0){
+                    gotoligcol(30,85);
+                    printf("Vous passez par la case depart vous recevez 200 euros de la banque.");
+                    a->argent = a->argent +200;
+                }
+            }
 
             gotoligcol(4, 85);
             printf("Vous avez lance les des %d fois.", compteur);
             gotoligcol(5, 85);
-            printf("Vous avez fait %d doubles.", compteur-1);
+            printf("Vous avez fait %d doubles.", comptedouble);
             gotoligcol(6, 85);
             sommeaffichee = sommeaffichee + somme;
             printf("Vous avancez de %d cases.", sommeaffichee);
             somme=0;
+
+            }while(test);
             compteur=0;
-            }
-        while(test);
 }
 
