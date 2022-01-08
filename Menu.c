@@ -3,15 +3,17 @@
 #include <windows.h>
 #include <time.h>
 #include <string.h>
-#include"Bibliothèque.h"
+#include "Biblio.h"
 
-#define MAX_LIMIT 20
+#define MAX_LIMIT 50
+#define LIMIT 100
 
 
-void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, joueur tabordre[4]){
-        int n=0, m=0;
-        char action = 0, continuer = 0, action2 = 0, action3=0;
-        char nomsauv[10];
+void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, joueur tabordre[4], int* numsauv, joueur tabcharg[4], t_propriete plateaucharg[32]){
+        ///variables pour tout le menu
+        char action = 0, action2 = 0, action3=0, continuer=0, action4=0;
+        //traitement du chargement de la partie
+        int i=0, c=0, j=0, d=0;
         //affichage de la console en couleurs et des instructions
         consoleencouleur(0, 15);
         Color(0, 15);
@@ -33,7 +35,8 @@ void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, jo
         }
 
         switch (*choix){
-            case 1: //cas de nouvelle partie ou on demande le nombre de joueurs et on rempli le tableau de joueurs
+            case 1:
+                //cas de nouvelle partie ou on demande le nombre de joueurs
                 printf("La nouvelle partie va commencer...\n");
                 printf("Appuyer sur entree pour continuer : ");
                 fflush(stdin);
@@ -48,27 +51,82 @@ void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, jo
                     fflush(stdin);
                     scanf("%d", nbjoueurs);
                 }
-                /*config_joueur(tab, *nbjoueurs);
-                printf("Vos informations ont etes enregistrees, vous avez ete place sur la case depart. Appuyer sur entree pour continuer\n");
-                fflush(stdin);
-                scanf("%c", &continuer);
-                consoleencouleur(15,0);
-                gotoligcol(0,0);
-                printf("L ordre de passage a ete determiner, il restera le meme tout au long de la partie !\n");
-                ordrepassagejoueurs(*nbjoueurs, tab, tabordre);*/
+
                 break;
             case 2:
+                do{
+                    printf("Saisir le numero de la sauvegarde (1 a 3): ");
+                    fflush(stdin);
+                    scanf("%d", numsauv);
+                }while(!(*numsauv==1) && !(*numsauv==2) && !(*numsauv==3));
 
-                printf("Saisir un nom a donner a cette sauvegarde (10 caracteres maximum): ");
+                optionsauvegarde(tabordre, Plateau, nbjoueurs, numsauv);
+
+                printf("\nVotre partie a ete sauvegardee, appuyer sur entree pour continuer");
                 fflush(stdin);
-                gets(nomsauv);
-                optionsauvegarde(tab, Plateau, &nbjoueurs, nomsauv);
-                printf("Votre partie a ete sauvegardee, appuyer sur entree pour continuer\n");
+                scanf("%c", &continuer);
+
                 break;
 
             case 3:
+                do{
+                    printf("Saisir le numero de la partie que vous voulez telecharger (1 a 3): ");
+                    fflush(stdin);
+                    scanf("%d", nbjoueurs);
+                    printf("Saisir le nombre de joueur participant a cette ancienne partie (1 a 4): ");
+                    fflush(stdin);
+                    scanf("%d", numsauv);
+                }while( (*nbjoueurs<1 || *nbjoueurs>4) || (*numsauv<1 || *numsauv>3));
+                ///vérification que les fichier ne sont pas vides
+                if(*numsauv == 1){
+                    FILE* sauv1 = NULL;
+                    FILE* prop1=NULL;
+                    sauv1 = fopen("sauvegarde1.txt", "r");
+                    prop1 = fopen("propriete1.txt", "r");
 
-                printf("Une autre partie est en cours de telechargement\n");
+                    rewind(sauv1); //remet au début de chaque fichier leurs curseur respectifs
+                    rewind(prop1);
+                    do{
+                        do
+                        {
+                            c=fgetc(sauv1);
+                            i++;
+                        }while(c!=EOF);
+                        do
+                        {
+                            d=fgetc(prop1);
+                            j++;
+                        }while(d!=EOF);
+
+                        if(j==1 && i==1){
+                            printf("Il n existe pas de sauvegarde pour ce numero, veuillez saisir un numero valide");
+                            do{
+                                printf("Saisir le numero de la partie que vous voulez telecharger (1 a 3): ");
+                                fflush(stdin);
+                                scanf("%d", nbjoueurs);
+                                printf("Saisir le nombre de joueur participant a cette ancienne partie (1 a 4): ");
+                                fflush(stdin);
+                                scanf("%d", numsauv);
+                                }while( (*nbjoueurs<1 || *nbjoueurs>4) || (*numsauv<1 || *numsauv>3));
+                        }
+                        else{
+                            printf("Une autre partie est en cours de telechargement. Veuillez patienter...");
+                            chargement_partie(tabcharg, plateaucharg, numsauv, nbjoueurs);
+
+                            for(i=0; i<*nbjoueurs; i++){
+                                printf("%s %d %c %d %d %d %d %d %d %d\n", tabcharg[i].nom, tabcharg[i].argent, tabcharg[i].signe, tabcharg[i].nombre_propri, tabcharg[i].position, tabcharg[i].indice, tabcharg[i].couleur, tabcharg[i].tour_prison, tabcharg[i].carte_prison, tabcharg[i].mort);
+                            }
+                            for(i=0; i<32; i++){
+                                    printf("%d %d %s %s %d %s %d %d %d %d %d %d %d %d", Plateau[i].place, Plateau[i].groupe, Plateau[i].nomgroupe, Plateau[i].nom, Plateau[i].prix, Plateau[i].nomproprietaire, Plateau[i].loyer, Plateau[i].maison, Plateau[i].hotel, Plateau[i].hypotheque, Plateau[i].x, Plateau[i].y, Plateau[i].proprietaire, Plateau[i].prix_actuel);
+                            }
+                            printf("\n La partie a ete chargee, vous allez commencer a jouer. Appuyez sur entree");
+                            fflush(stdin);
+                            scanf("%c", &action4);
+                            clearScreen();
+                        }
+
+                    }while(i==1 && j==1);
+
                 break;
 
             case 4:
@@ -83,53 +141,194 @@ void menu(joueur tab[4], t_propriete Plateau[32], int *nbjoueurs, int* choix, jo
                 break;
 
             case 5:
-                consoleencouleur(15,8);
-                gotoligcol(5,0);
-                printf("Les createurs du jeu sont :\n  %c Robin Balosso\n  %c Vinciane De Parcevaux\n  %c Julie Allier\n  %c Sixtine Gouesse\n", 0x1A, 0x1A, 0x1A, 0x1A);
+
+                afficher_createurs();
+
                 gotoligcol(15, 0);
                 printf("Appuyer sur entree pour revenir au menu");
                 fflush(stdin);
                 scanf("%c", &action3);
+
                 break;
             case 6:
+
                 printf("Au revoir");
+
                 break;
         }
+    }
 }
 
-void optionsauvegarde(joueur tab[4], t_propriete Plateau[32], int nbjoueurs, char nomsauvegarde[10]){
-    int i=0, j=0;
-    FILE* sauvegarde=NULL;
-    sauvegarde = fopen("sauvegarde.txt", "w");
-    if (sauvegarde == NULL){
-        printf("Le fichier est introuvable, la suavegarde ne peut pas etre effectuee");
+void chargement_partie(joueur tab[4], t_propriete Plateau[32], int* numsauv, int* nbjoueurs){
+    int i=0;
+    FILE* sauv1=NULL;
+    FILE* sauv2=NULL;
+    FILE* sauv3=NULL;
+
+    FILE* prop1=NULL;
+    FILE* prop2=NULL;
+    FILE* prop3=NULL;
+
+
+    if(*numsauv==1){
+        sauv1 = fopen("sauvegarde1.txt", "r");
+        if(sauv1==NULL){
+            printf("Erreur");
+        }
+        prop1 = fopen("propriete1.txt", "r");
+        if(prop1==NULL){
+            printf("Erreur");
+        }
+        ///saisie des joueurs dans le fichier
+        for(i=0; i<*nbjoueurs; i++){
+            fgets(tab[i].nom, LIMIT, sauv1);
+            fscanf(sauv1, "\n%d %c %d %d %d %d %d %d %d\n", &tab[i].argent, &tab[i].signe, &tab[i].nombre_propri, &tab[i].position, &tab[i].indice, &tab[i].couleur, &tab[i].tour_prison, &tab[i].carte_prison, &tab[i].mort);
+        }
+
+        for(i=0; i<32; i++){
+
+            fscanf(prop1, "%d %d\n", &Plateau[i].place, &Plateau[i].groupe);
+            fgets(Plateau[i].nomgroupe, LIMIT, prop1);
+            fscanf(prop1,"\n%d\n", &Plateau[i].prix);
+            fgets(Plateau[i].nom, LIMIT, prop1);
+            fscanf(prop1,"\n%d\n", &Plateau[i].loyer);
+            fgets(Plateau[i].nomproprietaire, LIMIT, prop1);
+            fscanf(prop1,"\n%d %d %d %d %d %d %d", &Plateau[i].maison, &Plateau[i].hotel, &Plateau[i].hypotheque, &Plateau[i].x, &Plateau[i].y, &Plateau[i].proprietaire, &Plateau[i].prix_actuel);
+        }
+        fclose(sauv1);
+        fclose(prop1);
     }
-    fprintf(sauvegarde, "%s\n", nomsauvegarde);
-    for (i=0; i<nbjoueurs; i++){
-        fprintf(sauvegarde, "%s", tab[i].nom);
-        fprintf(sauvegarde, "%d", tab[i].argent);
-        fprintf(sauvegarde, "%c", tab[i].signe);
-        fprintf(sauvegarde, "%d", tab[i].nombre_propri);
-        fprintf(sauvegarde, "%d", tab[i].position);
-        fprintf(sauvegarde, "%d", tab[i].pos_cord.x);
-        fprintf(sauvegarde, "%d\n\n", tab[i].pos_cord.y);
+
+    if(*numsauv==2){
+        sauv2 = fopen("sauvegarde2.txt", "r");
+        if(sauv2==NULL){
+            printf("Erreur");
+        }
+        prop2 = fopen("propriete2.txt", "r");
+        if(prop2==NULL){
+            printf("Erreur");
+        }
+        ///saisie des joueurs dans le fichier
+        for(i=0; i<*nbjoueurs; i++){
+            fscanf(sauv2, "%s %d %c %d %d %d %d %d %d %d\n", tab[i].nom, &tab[i].argent, &tab[i].signe, &tab[i].nombre_propri, &tab[i].position, &tab[i].indice, &tab[i].couleur, &tab[i].tour_prison, &tab[i].carte_prison, &tab[i].mort);
+        }
+
+        for(i=0; i<32; i++){
+            fscanf(prop2, "%d %d %s %s %d %s %d %d %d %d %d %d %d %d\n", &Plateau[i].place, &Plateau[i].groupe, Plateau[i].nomgroupe, Plateau[i].nom, &Plateau[i].prix, Plateau[i].nomproprietaire, &Plateau[i].loyer, &Plateau[i].maison, &Plateau[i].hotel, &Plateau[i].hypotheque, &Plateau[i].x, &Plateau[i].y, &Plateau[i].proprietaire, &Plateau[i].prix_actuel);
+        }
+        fclose(sauv2);
+        fclose(prop2);
     }
-    for (j=0; j<32; j++){
-        fprintf(sauvegarde,"\n\n\n%d", Plateau[j].place);
-        fprintf(sauvegarde,"%d", Plateau[j].groupe);
-        fprintf(sauvegarde,"%c", Plateau[j].nomgroupe[30]);
-        fprintf(sauvegarde,"%c", Plateau[j].nom[30]);
-        fprintf(sauvegarde,"%d", Plateau[j].prix);
-        fprintf(sauvegarde,"%d", Plateau[j].nomproprietaire);
-        fprintf(sauvegarde,"%d", Plateau[j].loyer);
-        fprintf(sauvegarde,"%d", Plateau[j].maison);
-        fprintf(sauvegarde,"%d", Plateau[j].hotel);
-        fprintf(sauvegarde,"%d", Plateau[j].hypotheque);
-        fprintf(sauvegarde,"%d", Plateau[j].x);
-        fprintf(sauvegarde,"%d\n\n", Plateau[j].y);
+
+    if(*numsauv==3){
+        sauv3 = fopen("sauvegarde3.txt", "r");
+        if(sauv3==NULL){
+            printf("Erreur");
+        }
+        prop3 = fopen("propriete3.txt", "r");
+        if(prop2==NULL){
+            printf("Erreur");
+        }
+        ///saisie des joueurs dans le fichier
+        for(i=0; i<*nbjoueurs; i++){
+            fscanf(sauv3, "%s %d %c %d %d %d %d %d %d %d\n", tab[i].nom, &tab[i].argent, &tab[i].signe, &tab[i].nombre_propri, &tab[i].position, &tab[i].indice, &tab[i].couleur, &tab[i].tour_prison, &tab[i].carte_prison, &tab[i].mort);
+        }
+
+        for(i=0; i<32; i++){
+            fscanf(prop3, "%d %d %s %s %d %s %d %d %d %d %d %d %d %d\n", &Plateau[i].place, &Plateau[i].groupe, Plateau[i].nomgroupe, Plateau[i].nom, &Plateau[i].prix, Plateau[i].nomproprietaire, &Plateau[i].loyer, &Plateau[i].maison, &Plateau[i].hotel, &Plateau[i].hypotheque, &Plateau[i].x, &Plateau[i].y, &Plateau[i].proprietaire, &Plateau[i].prix_actuel);
+        }
+        fclose(sauv3);
+        fclose(prop3);
     }
-    fclose(sauvegarde);
+
+    for(i=0; i<*nbjoueurs; i++){
+        printf("%s %d %c %d %d %d %d %d %d %d\n", tab[i].nom, tab[i].argent, tab[i].signe, tab[i].nombre_propri, tab[i].position, tab[i].indice, tab[i].couleur, tab[i].tour_prison, tab[i].carte_prison, tab[i].mort);
+    }
+    for(i=0; i<32; i++){
+        printf("%d %d %s %s %d %s %d %d %d %d %d %d %d %d", Plateau[i].place, Plateau[i].groupe, Plateau[i].nomgroupe, Plateau[i].nom, Plateau[i].prix, Plateau[i].nomproprietaire, Plateau[i].loyer, Plateau[i].maison, Plateau[i].hotel, Plateau[i].hypotheque, Plateau[i].x, Plateau[i].y, Plateau[i].proprietaire, Plateau[i].prix_actuel);
+    }
 }
+
+void afficher_createurs(){
+    consoleencouleur(15,8);
+    gotoligcol(5,0);
+    printf("Les createurs du jeu sont :\n  %c Robin Balosso\n  %c Vinciane De Parcevaux\n  %c Julie Allier\n  %c Sixtine Gouesse\n", 0x1A, 0x1A, 0x1A, 0x1A);
+
+}
+
+void optionsauvegarde(joueur tab[4], t_propriete Plateau[32], int* nbjoueurs, int* numsauv){
+    int i=0;
+    FILE* sauv1=NULL;
+    FILE* sauv2=NULL;
+    FILE* sauv3=NULL;
+
+    FILE* prop1=NULL;
+    FILE* prop2=NULL;
+    FILE* prop3=NULL;
+
+
+    if(*numsauv==1){
+        sauv1 = fopen("sauvegarde1.txt", "w");
+        if(sauv1==NULL){
+            printf("Erreur");
+        }
+        prop1 = fopen("propriete1.txt", "w");
+        if(prop1==NULL){
+            printf("Erreur");
+        }
+        ///saisie des joueurs dans le fichier
+        for(i=0; i<*nbjoueurs; i++){
+            fprintf(sauv1, "%s\n%d %c %d %d %d %d %d %d %d\n", tab[i].nom, tab[i].argent, tab[i].signe, tab[i].nombre_propri, tab[i].position, tab[i].indice, tab[i].couleur, tab[i].tour_prison, tab[i].carte_prison, tab[i].mort);
+        }
+
+        for(i=0; i<32; i++){
+              fprintf(prop1, "%d %d \n%s\n%d \n%s\n%d \n%s\n%d %d %d %d %d %d %d\n", Plateau[i].place, Plateau[i].groupe, Plateau[i].nomgroupe, Plateau[i].prix, Plateau[i].nom,  Plateau[i].loyer, Plateau[i].nomproprietaire, Plateau[i].maison, Plateau[i].hotel, Plateau[i].hypotheque, Plateau[i].x, Plateau[i].y, Plateau[i].proprietaire, Plateau[i].prix_actuel);
+        }
+        fclose(sauv1);
+        fclose(prop1);
+    }
+
+    if(*numsauv==2){
+        sauv2 = fopen("sauvegarde2.txt", "w");
+        if(sauv2==NULL){
+            printf("Erreur");
+        }
+        prop2 = fopen("propriete2.txt", "w");
+        if(prop2==NULL){
+            printf("Erreur");
+        }
+        ///saisie des joueurs dans le fichier
+        for(i=0; i<*nbjoueurs; i++){
+            fprintf(sauv2, "%s %d %c %d %d %d %d %d %d %d\n", tab[i].nom, tab[i].argent, tab[i].signe, tab[i].nombre_propri, tab[i].position, tab[i].indice, tab[i].couleur, tab[i].tour_prison, tab[i].carte_prison, tab[i].mort);
+        }
+        for(i=0; i<32; i++){
+            fprintf(prop2, "%d %d %s %s %d %s %d %d %d %d %d %d %d %d", Plateau[i].place, Plateau[i].groupe, Plateau[i].nomgroupe, Plateau[i].nom, Plateau[i].prix, Plateau[i].nomproprietaire, Plateau[i].loyer, Plateau[i].maison, Plateau[i].hotel, Plateau[i].hypotheque, Plateau[i].x, Plateau[i].y, Plateau[i].proprietaire, Plateau[i].prix_actuel);
+        }
+        fclose(sauv2);
+        fclose(prop2);
+    }
+
+    if(*numsauv==3){
+        sauv3 = fopen("sauvegarde3.txt", "w");
+        if(sauv3==NULL){
+            printf("Erreur");
+        }
+        prop3 = fopen("propriete3.txt", "w");
+        if(prop2==NULL){
+            printf("Erreur");
+        }
+        ///saisie des joueurs dans le fichier
+        for(i=0; i<*nbjoueurs; i++){
+            fprintf(sauv3, "%s %d %c %d %d %d %d %d %d %d\n", tab[i].nom, tab[i].argent, tab[i].signe, tab[i].nombre_propri, tab[i].position, tab[i].indice, tab[i].couleur, tab[i].tour_prison, tab[i].carte_prison, tab[i].mort);
+        }
+        for(i=0; i<32; i++){
+            fprintf(prop3, "%d %d %s %s %d %s %d %d %d %d %d %d %d %d", Plateau[i].place, Plateau[i].groupe, Plateau[i].nomgroupe, Plateau[i].nom, Plateau[i].prix, Plateau[i].nomproprietaire, Plateau[i].loyer, Plateau[i].maison, Plateau[i].hotel, Plateau[i].hypotheque, Plateau[i].x, Plateau[i].y, Plateau[i].proprietaire, Plateau[i].prix_actuel);
+        }
+        fclose(sauv3);
+        fclose(prop3);
+    }
+}
+
 
  void affichage_regles_jeu(){
                 printf("Afficher les regles du jeu\n");
