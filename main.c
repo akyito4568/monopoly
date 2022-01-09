@@ -25,9 +25,9 @@ int main()
     //affichage du menu principal
     menu(tableau, Plateau, &nbjoueurs, &choix, tableauordre, &numsauv, tabchargement, plateauchargement);
 
-    ///entrée dans le jeu
+    ///entrÃ©e dans le jeu
     do{
-        ///le joueur a affiché les règles ou les créateurs du jeu
+        ///le joueur a affichÃ© les rÃ¨gles ou les crÃ©ateurs du jeu
         while (choix==4 || choix==5){
         menu(tableau, Plateau, &nbjoueurs, &choix, tableauordre, &numsauv, tabchargement, plateauchargement);
         }
@@ -37,13 +37,13 @@ int main()
             menu(tableau, Plateau, &nbjoueurs, &choix, tableauordre, &numsauv, tabchargement, plateauchargement);
         }
 
-        ///le joueur a chargé une partie précédente
+        ///le joueur a chargÃ© une partie prÃ©cÃ©dente
         if(choix==3){
             Color(15,0);
             gotoligcol(0,85);
             printf("Appuyer sur entree pour reprendre la partie !");
             do{
-                clearScreen(); //remise à 0 de l'écran à chaque tour
+                clearScreen(); //remise Ã  0 de l'Ã©cran Ã  chaque tour
                 gotoligcol(0,0);
                 affichageplateau(plateauchargement);
                 for(i=0; i<32; i++){
@@ -53,7 +53,7 @@ int main()
                     }
                 }
 
-                /// tri pour si le joueur est en prison, ou joueur sur autre case (même prison, simple visite)
+                /// tri pour si le joueur est en prison, ou joueur sur autre case (mÃªme prison, simple visite)
                 //joueur en prison
                 if ((tabchargement[compteur].position==8) &&(tabchargement[compteur].tour_prison>=0)){
                     prison_final(plateauchargement,&tabchargement[compteur],tabchargement);
@@ -64,7 +64,7 @@ int main()
 
                 }
 
-                ///lancé des dés, affichage des données du joueur et de la propriété sur laquelle il tombe
+                ///lancÃ© des dÃ©s, affichage des donnÃ©es du joueur et de la propriÃ©tÃ© sur laquelle il tombe
 
                 afficher_donnee_joueur_encours(&tabchargement[compteur]);
                 affichagepropriete(plateauchargement, &tabchargement[compteur]);
@@ -78,7 +78,7 @@ int main()
                 analyse_case_joueur(&plateauchargement[Case], &tabchargement[compteur], plateauchargement, tabchargement, nbjoueurs);
 
 
-                /// réaffichage des données du joueur et de la propriété pour voir les modifications si il y a eu un achat
+                /// rÃ©affichage des donnÃ©es du joueur et de la propriÃ©tÃ© pour voir les modifications si il y a eu un achat
                 afficher_donnee_joueur_encours(&tabchargement[compteur]);
                 affichagepropriete(plateauchargement, &tabchargement[compteur]);
                 for(i=0; i<32; i++){
@@ -123,7 +123,7 @@ int main()
             }while(continuer == 1 && nombre_mort!=nbjoueurs-1);
         }
 
-        ///si le joueur sélectionne une nouvelle partie
+        ///si le joueur sÃ©lectionne une nouvelle partie
         if (choix==1){
 
             // remplissage d'un tableau de structure joueur
@@ -131,6 +131,7 @@ int main()
 
             //mise en ordre du tableau de structure joueur
             ordrepassagejoueurs(nbjoueurs, tableau, tableauordre);
+            index_l(tableauordre, nbjoueurs);
             clearScreen();
 
             /// remplissage des cases du tableau
@@ -146,7 +147,7 @@ int main()
 
             affichagepropriete(Plateau, &tableauordre[compteur]);
 
-            ///démarrage de la partie
+            ///dÃ©marrage de la partie
             Color(15,0);
             gotoligcol(0,85);
             printf("Appuyer sur entree pour lancer la partie !");
@@ -156,7 +157,7 @@ int main()
             scanf("%c", &continuer2);
 
             do{
-                clearScreen(); //remise à 0 de l'écran à chaque tour
+                clearScreen(); //remise Ã  0 de l'Ã©cran Ã  chaque tour
                 gotoligcol(0,0);
                 affichageplateau(Plateau);
                  do{
@@ -232,7 +233,7 @@ int main()
 
                     }while(regarderCase==1);
 
-                /// tri pour si le joueur est en prison, ou joueur sur autre case (même prison, simple visite)
+                /// tri pour si le joueur est en prison, ou joueur sur autre case (mÃªme prison, simple visite)
                 //joueur en prison
                 if ((tableauordre[compteur].position==8) &&(tableauordre[compteur].tour_prison>=0)){
                     prison_final(Plateau,&tableauordre[compteur],tableauordre);
@@ -243,7 +244,7 @@ int main()
 
                 }
 
-                ///lancé des dés, affichage des données du joueur et de la propriété sur laquelle il tombe
+                ///lancÃ© des dÃ©s, affichage des donnÃ©es du joueur et de la propriÃ©tÃ© sur laquelle il tombe
 
                 afficher_donnee_joueur_encours(&tableauordre[compteur]);
                 affichagepropriete(Plateau, &tableauordre[compteur]);
@@ -257,7 +258,7 @@ int main()
                 analyse_case_joueur(&Plateau[Case], &tableauordre[compteur], Plateau, tableauordre, nbjoueurs);
 
 
-                /// réaffichage des données du joueur et de la propriété pour voir les modifications si il y a eu un achat
+                /// rÃ©affichage des donnÃ©es du joueur et de la propriÃ©tÃ© pour voir les modifications si il y a eu un achat
                 afficher_donnee_joueur_encours(&tableauordre[compteur]);
                 affichagepropriete(Plateau, &tableauordre[compteur]);
                 for(i=0; i<32; i++){
