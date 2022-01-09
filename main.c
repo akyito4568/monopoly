@@ -161,6 +161,7 @@ int main()
                 gotoligcol(0,0);
                 affichageplateau(Plateau);
                  do{
+                        Color(15,0);
                         gotoligcol(10,85);
                         printf("Si vous voulez regarder une propriete selectionner 1 sinon selectionner 0 : ");
                         fflush(stdin);
