@@ -287,6 +287,9 @@ int main()
                         nombre_mort++;
                     }
                 }
+                 if(tableauordre[compteur].tour_prison == -2){
+                    tableauordre[compteur].tour_prison = -1;
+                 }
 
 
                 if(continuer==1){
